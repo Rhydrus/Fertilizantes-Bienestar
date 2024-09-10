@@ -1,9 +1,8 @@
 import os
-import numpy as np
 import pandas as pd
 
 
-mexico_shp_path = "data\Mexico"
+mexico_shp_path = "data/Mexico"
 fertilizantes_path = "data"
 
 

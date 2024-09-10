@@ -1,8 +1,6 @@
 import numpy as np
 import pandas as pd  # type: ignore
 import matplotlib.pyplot as plt
-import geopandas as gpd  # type: ignore
-from project import obtener_rutas_shp
 
 
 def calcular_minmax(dataset):
@@ -168,7 +166,7 @@ def Mapa_Entidades(dataframe, shp):
     # Asumiendo que 'Entidad' es una lista obtenida de una función o DataFrame
     Entidad = Entidades(dataframe, "ENTIDAD")
     print(Entidad)
-    print(f" ")
+    print(" ")
     Entidad = [entidad.title() for entidad in Entidad]
     print(f"Tittle: {Entidad}")
 

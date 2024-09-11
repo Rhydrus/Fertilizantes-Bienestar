@@ -1,6 +1,7 @@
 # __init__.py
 
 from .config import MapSHP, Beneficiarios, obtener_rutas_shp
+
 from .custom_funcs import (
     print_dataframe_info,
     count_values_in_categorical_columns,
@@ -19,6 +20,7 @@ from .custom_funcs_analisis import (
     Monto,
     Entidades_beneficiarios,
     Mapa_Entidades,
+    cosechas,
 )
 
 
@@ -42,4 +44,5 @@ __all__ = [
     "Entidades_beneficiarios",
     "Entidades",
     "Mapa_Entidades",
+    "cosechas",
 ]

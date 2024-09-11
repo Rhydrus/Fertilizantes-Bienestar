@@ -161,13 +161,25 @@ def Entidades_beneficiarios(dataset, figsize):
     plt.show()
 
 
+def Estados_rename(data):
+    for i in range(len(data)):  # Recorre el índice de cada elemento
+        # Reemplazar nombres de estados
+        if data[i] == "México":
+            data[i] = "MÃ©xico"  # Corrige el nombre de México
+        elif data[i] == "Michoacán De Ocampo":
+            data[i] = "MichoacÃ¡n de Ocampo"
+        elif data[i] == "Ciudad De México":
+            data[i] = "Ciudad de MÃ©xico"
+
+    return data
+
+
 def Mapa_Entidades(dataframe, shp):
 
     # Asumiendo que 'Entidad' es una lista obtenida de una función o DataFrame
-    Entidad = Entidades(dataframe, "ENTIDAD")
-    print(Entidad)
-    print(" ")
+    Entidad = Entidades(dataset=dataframe, columna="ENTIDAD")
     Entidad = [entidad.title() for entidad in Entidad]
+    Entidad = Estados_rename(data=Entidad)
     print(f"Tittle: {Entidad}")
 
     # Crear un DataFrame con los estados beneficiarios
@@ -177,17 +189,47 @@ def Mapa_Entidades(dataframe, shp):
             "Beneficiario": [1] * len(Entidad),  # 1 si es beneficiario, 0 si no lo es
         }
     )
-    print("")
-    print(f"Dataframe: {beneficiarios_df}")
     # Unir con el shapefile
     merged = shp.merge(beneficiarios_df, on="NOM_ENT", how="left")
-    print("")
-    print(f"Merged: {merged}")
     # Reemplazar NaN con 0 (no beneficiarios)
     merged["Beneficiario"] = merged["Beneficiario"].fillna(0)
-
     # Colorear los estados beneficiarios
     fig, ax = plt.subplots(1, 1, figsize=(15, 8))
     merged.plot(column="Beneficiario", cmap="OrRd", legend=True, ax=ax)
     ax.set_title("Estados Beneficiarios del Programa")
+    plt.show()
+
+
+def cosechas(dataframe):
+
+    # Sumar la cantidad de veces que cada producto fue cosechado por estado
+    producto_por_estado = (
+        dataframe.groupby(["ENTIDAD", "PRODUCTO"])
+        .size()
+        .reset_index(name="CANTIDAD_CULTIVOS")
+    )
+
+    # Pivotar la tabla para tener los productos como columnas
+    producto_pivot = producto_por_estado.pivot(
+        index="ENTIDAD", columns="PRODUCTO", values="CANTIDAD_CULTIVOS"
+    ).fillna(0)
+
+    # Mostrar el resultado
+    print(producto_por_estado)
+
+    # Configuración del tamaño del gráfico
+    plt.figure(figsize=(14, 8))
+
+    # Crear el gráfico de barras apiladas
+    producto_pivot.plot(kind="bar", stacked=True, colormap="tab20", figsize=(14, 8))
+
+    # Configuración de la gráfica
+    plt.title("Cantidad de Veces que Cada Producto fue Cosechado por Estado 2020")
+    plt.xlabel("Estado")
+    plt.ylabel("Cantidad de Veces Cosechado")
+    plt.xticks(rotation=90)
+    plt.legend(title="Producto Cultivado", bbox_to_anchor=(1.05, 1), loc="upper left")
+    plt.tight_layout()
+
+    # Mostrar gráfico
     plt.show()

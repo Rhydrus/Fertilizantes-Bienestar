@@ -180,7 +180,7 @@ def Entidades_beneficiarios(dataset, figsize):
     pastel_colors = sns.color_palette("pastel", len(Estados_Montos))
     # Gráfico de barras verticales para Estados ordenados
     bars = ax.bar(Estados_Montos.keys(), Estados_Montos.values(), color=pastel_colors)
-    ax.set_title("Montos Federales por Estado(millones) - 2020")
+    ax.set_title("Montos Federales por Estado(millones)")
     ax.set_ylabel("Total (MXN)")
 
     # Añadir los montos correspondientes en las barras
@@ -257,9 +257,6 @@ def cosechas(dataframe):
         index="ENTIDAD", columns="PRODUCTO", values="CANTIDAD_CULTIVOS"
     ).fillna(0)
 
-    # Mostrar el resultado
-    print(producto_por_estado)
-
     # Configuración del tamaño del gráfico
     plt.figure(figsize=(14, 8))
 
@@ -267,7 +264,7 @@ def cosechas(dataframe):
     producto_pivot.plot(kind="bar", stacked=True, colormap="tab20b", figsize=(14, 8))
 
     # Configuración de la gráfica
-    plt.title("Cantidad de Veces que Cada Producto fue Cosechado por Estado 2020")
+    plt.title("Cantidad de Veces que Cada Producto fue Cosechado por Estado")
     plt.xlabel("Estado")
     plt.ylabel("Cantidad de Veces Cosechado")
     plt.xticks(rotation=90)
@@ -276,5 +273,7 @@ def cosechas(dataframe):
 
     # Mostrar gráfico
     plt.show()
+    # Mostrar el resultado
+    print(producto_por_estado)
 
     return producto_por_estado

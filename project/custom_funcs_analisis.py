@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd  # type: ignore
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 
 def calcular_minmax(dataset):
@@ -27,6 +28,18 @@ def plot_minmax(*montos_dicts, labels=None):
     min_values = [montos["min"] for montos in montos_dicts]
     mean_values = [montos["mean"] for montos in montos_dicts]
     max_values = [montos["max"] for montos in montos_dicts]
+    total_values = [montos["total"] for montos in montos_dicts]
+
+    # Crear un DataFrame con los estadísticos para cada etiqueta
+    df_stats = pd.DataFrame(
+        {
+            "Label": labels,
+            "Min": min_values,
+            "Mean": mean_values,
+            "Max": max_values,
+            "Total": total_values,
+        }
+    )
 
     # Ancho de las barras
     bar_width = 0.3
@@ -36,17 +49,37 @@ def plot_minmax(*montos_dicts, labels=None):
     r2 = [x + bar_width for x in r1]
     r3 = [x + bar_width for x in r2]
 
+    pastel_colors = sns.color_palette("pastel", 3)
+
     # Crear las barras
-    plt.bar(r1, min_values, color="b", width=bar_width, edgecolor="blue", label="Min")
+    plt.bar(
+        r1,
+        min_values,
+        color=pastel_colors[0],
+        width=bar_width,
+        edgecolor=pastel_colors[0],
+        label="Min",
+    )
+
+    pastel_colors = sns.color_palette("pastel", 3)
+
     plt.bar(
         r2,
         mean_values,
-        color="orange",
+        color=pastel_colors[1],
         width=bar_width,
-        edgecolor="orange",
+        edgecolor=pastel_colors[1],
         label="Mean",
     )
-    plt.bar(r3, max_values, color="g", width=bar_width, edgecolor="g", label="Max")
+
+    plt.bar(
+        r3,
+        max_values,
+        color=pastel_colors[2],
+        width=bar_width,
+        edgecolor=pastel_colors[2],
+        label="Max",
+    )
 
     # Añadir etiquetas y título
     plt.xlabel("Categoría", fontweight="bold")
@@ -59,6 +92,8 @@ def plot_minmax(*montos_dicts, labels=None):
 
     # Mostrar el gráfico
     plt.show()
+
+    return df_stats
 
 
 def plot_totals(*montos_dicts, labels=None):
@@ -75,11 +110,11 @@ def plot_totals(*montos_dicts, labels=None):
     totals = [montos["total"] for montos in montos_dicts]
 
     # Definir colores para cada barra
-    colors = ["b", "g", "r", "c"][: len(montos_dicts)]
+    pastel_colors = sns.color_palette("pastel", len(montos_dicts))
 
     # Crear el gráfico de barras
     plt.figure(figsize=(15, 8))
-    bars = plt.bar(labels, totals, color=colors, edgecolor="grey")
+    bars = plt.bar(labels, totals, color=pastel_colors)
 
     # Añadir etiquetas y título
     plt.xlabel("Categoría", fontweight="bold")
@@ -132,12 +167,19 @@ def Entidades_beneficiarios(dataset, figsize):
     Estados_Montos = Monto(
         dataset=dataset, grupo="ENTIDAD", region=Estados, Reverse=True
     )
+    # Crear un dataframe con los estados y sus montos
+    df_estados_montos = pd.DataFrame(
+        data={
+            "Estado": list(Estados_Montos.keys()),
+            "Monto": list(Estados_Montos.values()),
+        }
+    )
 
     plt.figure(figsize=figsize)
     ax = plt.gca()  # Obtener el eje actual
-
+    pastel_colors = sns.color_palette("pastel", len(Estados_Montos))
     # Gráfico de barras verticales para Estados ordenados
-    bars = ax.bar(Estados_Montos.keys(), Estados_Montos.values(), color="b")
+    bars = ax.bar(Estados_Montos.keys(), Estados_Montos.values(), color=pastel_colors)
     ax.set_title("Montos Federales por Estado(millones) - 2020")
     ax.set_ylabel("Total (MXN)")
 
@@ -159,6 +201,7 @@ def Entidades_beneficiarios(dataset, figsize):
 
     # Mostrar el gráfico
     plt.show()
+    return df_estados_montos
 
 
 def Estados_rename(data):
@@ -221,7 +264,7 @@ def cosechas(dataframe):
     plt.figure(figsize=(14, 8))
 
     # Crear el gráfico de barras apiladas
-    producto_pivot.plot(kind="bar", stacked=True, colormap="tab20", figsize=(14, 8))
+    producto_pivot.plot(kind="bar", stacked=True, colormap="tab20b", figsize=(14, 8))
 
     # Configuración de la gráfica
     plt.title("Cantidad de Veces que Cada Producto fue Cosechado por Estado 2020")
@@ -233,3 +276,5 @@ def cosechas(dataframe):
 
     # Mostrar gráfico
     plt.show()
+
+    return producto_por_estado
